@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: crud_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: crud_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"  # Porta exposta para DBeaver
+    networks:
+      - crud_network
+
+  # Node.js Backend Application
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crud_backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOST: 0.0.0.0
+      DATABASE_URL: postgresql://user:password@postgres:5432/crud_db
+    ports:
+      - "3000:3000"  # Porta exposta para API
+    depends_on:
+      - postgres
+    networks:
+      - crud_network
+
+# Networks
+networks:
+  crud_network:
+    driver: bridge
+
+# Volumes
+volumes:
+  postgres_data:
+    driver: local

@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: crud_postgres_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: crud_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - crud_network_dev
+
+  # Backend com Hot Reload
+  backend-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: crud_backend_dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      HOST: 0.0.0.0
+      DATABASE_URL: postgresql://user:password@postgres:5432/crud_db
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    networks:
+      - crud_network_dev
+    volumes:
+      # Volumes para hot reload - seus arquivos são sincronizados
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+      - ./tsconfig.json:/app/tsconfig.json
+      # Evita conflitos com node_modules
+      - /app/node_modules
+
+networks:
+  crud_network_dev:
+    driver: bridge
+
+volumes:
+  postgres_data_dev:
+    driver: local
