@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "lib": ["ES2020"],
+    "target": "ES2022", // ES2022 é mais atual
+    "module": "NodeNext",// Melhor para projetos Node.js recentes
+    "lib": ["ES2022"],
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -20,11 +20,14 @@
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext", // Compatível com ESM/CJS
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "allowSyntheticDefaultImports": true, // Facilita importações
+    "verbatimModuleSyntax": true, // Substitui importsNotUsedAsValues
+    "useUnknownInCatchVariables": true // Mais seguro para erros
   },
   "include": [
     "src/**/*"

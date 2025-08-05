@@ -1,37 +1,44 @@
-
-import Fastify from 'fastify'
-import dotenv from 'dotenv';
-import '@fastify/postgres'; // Import plugin types for augmentation
+import Fastify from "fastify";
+import dotenv from "dotenv";
+import "@fastify/postgres"; // Import plugin types for augmentation
+import cors from "@fastify/cors";
+import postgres from "@fastify/postgres"; // Add this import
 
 const fastify = Fastify({
-  logger: true
-})
-
-// Load environment variables
-dotenv.config();
-
-// Register PostgreSQL plugin
-fastify.register(require('@fastify/postgres'), {
-  connectionString: process.env.DATABASE_URL || 'postgresql://user:password@localhost:5432/crud_db'
+  logger: true,
 });
 
-fastify.get('/users', (_request, reply) => {
-  fastify.pg.query('SELECT * FROM users', (err, result) => {
-    if (err) {
-      fastify.log.error(err);
-      reply.status(500).send('Database query error');
-    } else {
-      reply.send(result.rows);
-    }
-  });
-})
+// Load environment variables first
+dotenv.config();
 
-// Start server
 const start = async () => {
   try {
-    const port = parseInt(process.env.PORT || '3000');
-    const host = process.env.HOST || '0.0.0.0';
-    
+    await fastify.register(cors, {
+      origin: "*", // Allow all origins for development, adjust as needed for production
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    });
+
+    // Register PostgreSQL plugin
+    await fastify.register(postgres, {
+      connectionString:
+        process.env.DATABASE_URL ||
+        "postgresql://user:password@localhost:5432/crud_db",
+    });
+
+    fastify.get("/users", (_request, reply) => {
+      fastify.pg.query("SELECT * FROM users", (err, result) => {
+        if (err) {
+          fastify.log.error(err);
+          reply.status(500).send("Database query error");
+        } else {
+          reply.send(result.rows);
+        }
+      });
+    });
+
+    const port = parseInt(process.env.PORT || "3000");
+    const host = process.env.HOST || "0.0.0.0";
+
     await fastify.listen({ port, host });
     console.log(`Server is running on http://${host}:${port}`);
   } catch (err) {
@@ -40,4 +47,4 @@ const start = async () => {
   }
 };
 
-start();
+await start();

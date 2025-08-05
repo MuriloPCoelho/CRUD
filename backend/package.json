@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "CRUD backend with Node.js, TypeScript, Fastify and PostgreSQL",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "dev": "tsx watch src/index.ts",
     "clean": "rimraf dist"
   },
   "keywords": [
@@ -19,16 +20,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@fastify/postgres": "^5.2.2",
+    "@fastify/cors": "^11.1.0",
+    "@fastify/postgres": "^6.0.2",
     "dotenv": "^16.3.1",
-    "fastify": "^4.24.3",
+    "fastify": "^5.4.0",
     "pg": "^8.16.3"
   },
   "devDependencies": {
     "@types/node": "^20.8.6",
     "@types/pg": "^8.10.7",
     "rimraf": "^5.0.5",
-    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.20.3",
     "typescript": "^5.2.2"
   }
 }
