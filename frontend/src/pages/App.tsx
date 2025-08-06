@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -18,53 +19,22 @@ import {
   TableHeader,
   TableRow,
 } from "../components/ui/table";
+import useGetUsers from "@/services/users/useGetUsers";
+import useCreateUser from "@/services/users/useCreateUser";
 
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
+const App = () => {
+  const { response } = useGetUsers();
+  const { createUser } = useCreateUser();
 
-function App() {
+  const handleCreateUser = async () => {
+    await createUser({ name: "João", email: "joao@example.com" });
+  };
+
+  useEffect(() => {
+    console.log(response);
+    handleCreateUser();
+  }, [response]);
+
   return (
     <div className="dark:bg-neutral-900 h-dvh w-screen dark:text-white text-neutral-900">
       <div className="flex flex-col items-center justify-center h-full">
@@ -106,19 +76,19 @@ function App() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Invoice</TableHead>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Total</TableHead>
-                  <TableHead>Payment Method</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {invoices.map((invoice) => (
-                  <TableRow key={invoice.invoice}>
-                    <TableCell>{invoice.invoice}</TableCell>
-                    <TableCell>{invoice.paymentStatus}</TableCell>
-                    <TableCell>{invoice.totalAmount}</TableCell>
-                    <TableCell>{invoice.paymentMethod}</TableCell>
+                {response.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>{user.id}</TableCell>
+                    <TableCell>{user.name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.status ? "Active" : "Inactive"}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -128,6 +98,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
 export default App;
