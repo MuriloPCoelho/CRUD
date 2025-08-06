@@ -36,6 +36,22 @@ const start = async () => {
       });
     });
 
+    fastify.post("/users", async (request, reply) => {
+      console.log("Creating user:", request.body);
+      const { name, email } = request.body;
+
+      try {
+        const result = await fastify.pg.query(
+          "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *",
+          [name, email]
+        );
+        reply.status(201).send(result.rows[0]);
+      } catch (error) {
+        fastify.log.error(error);
+        reply.status(500).send("Database query error");
+      }
+    });
+
     const port = parseInt(process.env.PORT || "3000");
     const host = process.env.HOST || "0.0.0.0";
 
