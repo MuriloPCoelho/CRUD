@@ -21,6 +21,7 @@ import {
 } from "../components/ui/table";
 import useGetUsers from "@/services/users/useGetUsers";
 import useCreateUser from "@/services/users/useCreateUser";
+import ModalUsers from "@/components/modalUsers";
 
 const App = () => {
   const { response } = useGetUsers();
@@ -72,6 +73,9 @@ const App = () => {
               </div>
             </div>
           </form>
+          <div className="flex justify-end">
+            <ModalUsers />
+          </div>
           <div>
             <Table>
               <TableHeader>
