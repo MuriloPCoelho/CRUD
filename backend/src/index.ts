@@ -37,19 +37,25 @@ const start = async () => {
     });
 
     fastify.post("/users", async (request, reply) => {
-      console.log("Creating user:", request.body);
       const { name, email } = request.body;
-
-      try {
-        const result = await fastify.pg.query(
-          "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *",
-          [name, email]
-        );
-        reply.status(201).send(result.rows[0]);
-      } catch (error) {
-        fastify.log.error(error);
-        reply.status(500).send("Database query error");
-      }
+      fastify.pg.query(
+        "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *",
+        [name, email],
+        (error, result) => {
+          if (error) {
+            if (error.code === "23505") {
+              // Unique violation error code
+              fastify.log.error("Email already exists:", error);
+              reply.status(400).send("Email already exists");
+            } else {
+              fastify.log.error(error);
+              reply.status(500).send("Database query error");
+            }
+          } else {
+            reply.status(201).send(result.rows[0]);
+          }
+        }
+      );
     });
 
     const port = parseInt(process.env.PORT || "3000");
