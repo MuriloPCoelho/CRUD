@@ -40,29 +40,29 @@ const App = () => {
     <div className="dark:bg-neutral-900 h-dvh w-screen dark:text-white text-neutral-900">
       <div className="flex flex-col items-center justify-center h-full">
         <div className="w-1/2 flex flex-col gap-8">
-          <form action="">
+          <form>
             <div className="dark:bg-neutral-800 grid grid-cols-3 grid-rows-2 rounded p-8 gap-x-4">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="search">Search</Label>
-                <Input type="text" placeholder="Search invoices..." />
+                <Label htmlFor="name">Name</Label>
+                <Input id="name" type="text" placeholder="Search invoices..." />
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="search">Search</Label>
-                <Input type="text" placeholder="Search invoices..." />
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" placeholder="Search invoices..." />
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="search">Search</Label>
+                <Label htmlFor="status">Status</Label>
                 <Select>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a status" />
+                  <SelectValue placeholder="Select a status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Status</SelectLabel>
-                      <SelectItem value="paid">Paid</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="unpaid">Unpaid</SelectItem>
-                    </SelectGroup>
+                  <SelectGroup>
+                    <SelectLabel>Status</SelectLabel>
+                    <SelectItem value="paid">Paid</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="unpaid">Unpaid</SelectItem>
+                  </SelectGroup>
                   </SelectContent>
                 </Select>
               </div>
