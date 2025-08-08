@@ -58,6 +58,24 @@ const start = async () => {
       );
     });
 
+    fastify.delete("/users/:id", (request, reply) => {
+      const { id } = request.params;
+      fastify.pg.query(
+        "DELETE FROM users WHERE id = $1 RETURNING *",
+        [id],
+        (err, result) => {
+          if (err) {
+            fastify.log.error(err);
+            reply.status(500).send("Database query error");
+          } else if (result.rowCount === 0) {
+            reply.status(404).send("User not found");
+          } else {
+            reply.send(result.rows[0]);
+          }
+        }
+      );
+    });
+
     const port = parseInt(process.env.PORT || "3000");
     const host = process.env.HOST || "0.0.0.0";
 
