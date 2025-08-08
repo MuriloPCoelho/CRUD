@@ -11,40 +11,54 @@ import {
 } from "./ui/dialog";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+const FormData = z.object({
+  name: z.string().min(2).max(100),
+  email: z.email(),
+});
+
+type FormData = z.infer<typeof FormData>;
 
 const ModalUsers = () => {
+  const { handleSubmit, register } = useForm<FormData>();
+
+  const onSubmit = handleSubmit (data => {
+    console.log("User created:", data);
+  });
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" >Create User</Button>
+        <Button variant="outline">Create User</Button>
       </DialogTrigger>
-      <form>
-        <DialogContent>
+      <DialogContent>
+        <form onSubmit={onSubmit}>
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
+            <DialogTitle>Add new user</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re
-              done.
+              Fill in the details to create a new user account.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4">
+          <div className="grid gap-4 py-4">
             <div className="grid gap-3">
-              <Label htmlFor="name-1">Name</Label>
-              <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
+              <Label htmlFor="name">Name</Label>
+              <Input id="name" type="text" {...register("name")} />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="username-1">Username</Label>
-              <Input id="username-1" name="username" defaultValue="@peduarte" />
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" {...register("email")} />
             </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit">Create user</Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 };
